@@ -24,4 +24,5 @@ public interface AlumnosDao {
 	////Método eliminar alumno por dni. Lógica patrón DAO. Solo ejecutamos query
 	boolean eliminarAlumno(String dni);
 
+	
 }
