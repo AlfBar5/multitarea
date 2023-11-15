@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 
 import helpers.EntityManagerLocator;
 import model.Pedido;
+import serializacion.DeserializadorFecha;
 import service.PedidosService;
 import service.PedidosServiceFactory;
 
@@ -41,34 +42,48 @@ public class HiloAlta implements Runnable  {
 	
 	@Override
 	public void run() {
-		//recoger el nombre enviado el cliente y enviarle
-		//mensaje de saludo personalizado
 		
-		/*
+		//recogemos el alta de pedido desde la tienda en formato json
+		//Creamos el Gson para que pase por el deserializador
+		
+		//hay que usar el objeto de la clase DeserializadorFecha para convertir el LocalDate
+		Gson gson= new GsonBuilder()
+				.registerTypeAdapter(LocalDate.class, new DeserializadorFecha()) //GsonBuilder
+				.create(); //Gson
+		
+		//declaramos método altapedidos de PedidosServiceImpl a través del factory
+		PedidosService service = PedidosServiceFactory.getPedidosService();
+		
+		
 		try(socket;PrintStream out=new PrintStream(socket.getOutputStream());
 			BufferedReader bf=new BufferedReader(new InputStreamReader(socket.getInputStream()));){
 			
-			//recogemos el nombre de tienda enviado por cliente
-			String tienda=bf.readLine();
+			//leemos el alta de pedido de tienda enviado por cliente
+			String json=bf.readLine();
+			//traza para comprobar
+			//System.out.println(json);
 			
-			//traza para ver si llega bien el parámetro de tienda
-			System.out.println(tienda);
-			//Recuperamos lista de pedidos
-			PedidosService  service = PedidosServiceFactory.getPedidosService();
-			List<Pedido> pedidos=service.pedidosTienda(tienda);
+			//lo deserializamos para convertirlo en objeto Pedido
+			Pedido pedido = gson.fromJson(json, Pedido.class);
 			
-			//trazas para ver las cadenas json que se forman y se devuelven a la tienda cliente
-			System.out.println(pedidos);
-			System.out.println(serializarLista(pedidos));
-			//pasamos la lista de pedidos como petición
-			out.println(serializarLista(pedidos));
+			//llamamos al método altapedidos de PedidosServiceImpl a través del factory
+			service.altaPedido(pedido);
+					
+			//EN UNA LINEA
+			//convertimos json a objeto Pedido en una linea
+			//método altapedidos de PedidosServiceImpl a través del factory
+			//service.altaPedido(gson.fromJson(json, Pedido.class));
+									
+			//traza mensaje alta
+			System.out.println("Alta producida");		
+			
 			
 		}
 		catch(IOException ex) {
 			ex.printStackTrace();
 		}
 		
-		*/
+		
 		
 	}
 	

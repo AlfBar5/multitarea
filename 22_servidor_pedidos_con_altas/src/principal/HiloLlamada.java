@@ -40,8 +40,8 @@ public class HiloLlamada implements Runnable  {
 	
 	@Override
 	public void run() {
-		//recoger el nombre enviado el cliente y enviarle
-		//mensaje de saludo personalizado
+		//recoger el nombre de la tienda del cliente como parámetro
+		//pasarle la Lista de pedidos de esa tienda
 		try(socket;PrintStream out=new PrintStream(socket.getOutputStream());
 			BufferedReader bf=new BufferedReader(new InputStreamReader(socket.getInputStream()));){
 			
